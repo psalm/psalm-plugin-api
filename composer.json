@@ -1,0 +1,13 @@
+{
+    "name": "psalm/psalm-plugin-api",
+    "description": "Stable, semantically versioned API for Psalm plugins",
+    "type": "metapackage",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Daniil Gentili",
+            "email": "daniil@daniil.it"
+        }
+    ],
+    "require": {}
+}
