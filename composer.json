@@ -9,5 +9,8 @@
             "email": "daniil@daniil.it"
         }
     ],
-    "require": {}
+    "require": {},
+    "conflict": {
+        "vimeo/psalm": "<7.0.0"
+    }
 }
