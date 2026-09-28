@@ -6,13 +6,14 @@ This is a separate, empty metapackage: its major version will be bumped every ti
 
 This allows breaking changes within Psalm's plugin API, without requiring a major in Psalm itself (which will be reserved only for breaking changes in the CLI API or other major behavioral changes).  
 
-Current stable release: `1.0.0`.
-
 ## Changelog
 
-### `1.0.0`
+### Unreleased
 
-Covers Psalm v7 (to be defined&released).
+- [BC] Purity is now tracked as a bitmask of capabilities (`Psalm\Storage\Capabilities`) instead of the four ordered levels of `Psalm\Storage\Mutations`, which was removed. Every `$allowed_mutations` property/parameter became `$capabilities` (`Psalm\Context`, `Psalm\Storage\FunctionLikeStorage`, `Psalm\Storage\ClassLikeStorage`, `Psalm\Plugin\DynamicFunctionStorage`, docblock manipulators), `MethodStorage#$containing_class_allowed_mutations` became `$containing_class_capabilities`, and `StatementsSource#signalMutation()`/`signalMutationOnlyInferred()` take the required capabilities.
+- [BC] `Psalm\Type\Atomic\TCallable#$allowed_mutations` and `Psalm\Type\Atomic\TClosure#$allowed_mutations` were replaced with a `$purity` union type (a `Psalm\Type\Atomic\TCapabilities` set, or a purity template), with `getCapabilities()`/`setPurity()` helpers; the constructors take an `int|Union $purity`.
+- [BC] `dictionaries/ImpureFunctionsList.php` now maps each function to its capabilities instead of listing impure functions, and `Psalm\Internal\Codebase\ImpureFunctionsList::getCapabilities()` returns them.
+- [BC] `Psalm\Context#removeMutableObjectVars()` takes the callee's capabilities as a second argument.
 
 ### `0.2.0`
 
