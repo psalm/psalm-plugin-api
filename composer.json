@@ -11,6 +11,6 @@
     ],
     "require": {},
     "conflict": {
-        "vimeo/psalm": "<7.0.0"
+        "vimeo/psalm": "<7.0.0-rc3"
     }
 }

@@ -8,6 +8,17 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.4.0`
+
+Covers the Psalm 7 master branch after `7.0.0-rc2`.
+
+- [BC] A new capability, `time` (`Psalm\Storage\Capabilities::TIME`, 128), covers reading the clock (`time()`, `microtime()`, `date()` without a timestamp, …), which used to cost `io`. `Capabilities::ALL` (`impure`) is now 255, and so are the defaults of every capability set: `Psalm\Context#$capabilities`, `Psalm\Storage\FunctionLikeStorage#$capabilities`, `Psalm\Storage\ClassLikeStorage#$capabilities`, `Psalm\Storage\MethodStorage#$containing_class_capabilities`, `Psalm\Plugin\DynamicFunctionStorage#$capabilities`, the `$purity` of the `TCallable` and `TClosure` constructors and `Context#removeMutableObjectVars()`'s `$callee_capabilities`. `Capabilities::TAINT_SPECIALIZED` changed accordingly.
+- [BC] `Psalm\Storage\Capabilities::allows()` was renamed to `allowsAnyOf()`. `Capabilities::equals()` compares two capability sets exactly, and capability sets are typed as `CapabilitySet` int-masks.
+- [BC] `Psalm\Type\Union#getTaintsToRemove()`, `getAtomicTaintsToRemove()` and `getArrayKeyTaintsToRemove()` take the taints of user input, `Psalm\Codebase#getInputTaints()`, which include the custom taints `psalm.xml` adds to `input`.
+- [BC] The `$taints` of `Psalm\Codebase#addTaintSource()` and `addTaintSink()` default to `null`, the taints of user input (`Codebase#getInputTaints()`), rather than the built-in ones.
+- `Psalm\Plugin\EventHandler\MethodCapabilitiesProviderInterface` lets a plugin give the capabilities of a method call.
+- `@psalm-taint-sink <kind> $param[*]` makes the values of an array parameter a sink, but not its keys.
+
 ### `0.3.0`
 
 - [BC] Purity is now tracked as a bitmask of capabilities (`Psalm\Storage\Capabilities`) instead of the four ordered levels of `Psalm\Storage\Mutations`, which was removed. Every `$allowed_mutations` property/parameter became `$capabilities` (`Psalm\Context`, `Psalm\Storage\FunctionLikeStorage`, `Psalm\Storage\ClassLikeStorage`, `Psalm\Plugin\DynamicFunctionStorage`, docblock manipulators), `MethodStorage#$containing_class_allowed_mutations` became `$containing_class_capabilities`, and `StatementsSource#signalMutation()`/`signalMutationOnlyInferred()` take the required capabilities.
