@@ -8,6 +8,10 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.4.1`
+
+- `Psalm\Codebase#getReceiverTaintPath()` gives the path along which the taints of the object a method of a builtin class (`ArrayObject`, `ArrayIterator`, `SplObjectStorage`, `Generator`, …, or a class extending one) is called on flow into what the method returns (`=`, `arrayvalue-fetch`, `arrayvalue-fetch-'key'` for a literal key, `arraykey-fetch`, `return`), or null if the method returns none of them.
+
 ### `0.4.0`
 
 Covers the Psalm 7 master branch after `7.0.0-rc2`.
