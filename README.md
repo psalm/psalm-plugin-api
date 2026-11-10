@@ -11,7 +11,7 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 ### `0.4.2`
 
 - `Psalm\Plugin\PluginFixableIssuesInterface` lets a plugin entry point declare the issues it can fix (`getFixableIssues()`, a list of issue classes): Psalter then accepts them in `--issues`, fixes them with `--issues=all` and lists them with `--list-supported-issues`.
-- `Psalm\Codebase#shouldFixIssue()` tells a plugin whether to add its file replacements for an issue type: when Psalter was asked to fix it and the given suppressed issues don't suppress it.
+- `Psalm\Codebase#shouldFixIssue()` tells a plugin whether to add its file replacements for an issue: when Psalter was asked to fix its type and neither the given suppressed issues nor `psalm.xml` suppress it.
 
 ### `0.4.1`
 
