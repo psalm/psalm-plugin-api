@@ -8,6 +8,11 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.4.2`
+
+- `Psalm\Plugin\PluginFixableIssuesInterface` lets a plugin entry point declare the issues it can fix (`getFixableIssues()`, a list of issue classes): Psalter then accepts them in `--issues`, fixes them with `--issues=all` and lists them with `--list-supported-issues`.
+- `Psalm\Codebase#shouldFixIssue()` tells a plugin whether to add its file replacements for an issue: when Psalter was asked to fix its type and neither the given suppressed issues nor `psalm.xml` suppress it.
+
 ### `0.4.1`
 
 - `Psalm\Codebase#getReceiverTaintPath()` gives the path along which the taints of the object a method of a builtin class (`ArrayObject`, `ArrayIterator`, `SplObjectStorage`, `Generator`, …, or a class extending one) is called on flow into what the method returns (`=`, `arrayvalue-fetch`, `arrayvalue-fetch-'key'` for a literal key, `arraykey-fetch`, `return`), or null if the method returns none of them.
