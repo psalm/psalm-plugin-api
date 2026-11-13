@@ -8,6 +8,10 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.4.3`
+
+- `Psalm\Plugin\EventHandler\Event\BeforeFileAnalysisEvent#markFileAsCliOnly()` says that a file's top-level code and the closures in it only run from the command line, like code marked `@psalm-cli-only` (what it prints isn't reported as `TaintedHtml`, and it may call `@psalm-cli-only` code); `#isFileCliOnly()` tells whether it does (a plugin marked it, or code only running from the command line includes it).
+
 ### `0.4.2`
 
 - `Psalm\Plugin\PluginFixableIssuesInterface` lets a plugin entry point declare the issues it can fix (`getFixableIssues()`, a list of issue classes): Psalter then accepts them in `--issues`, fixes them with `--issues=all` and lists them with `--list-supported-issues`.
