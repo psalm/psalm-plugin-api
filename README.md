@@ -8,6 +8,12 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.4.4`
+
+- `Psalm\Storage\ClassLikeStorage#getMixins()` returns the `@mixin`s a class declares, in declaration order, followed by those plugins added to `#$namedMixins` or `#$templatedMixins`.
+- `ClassLikeStorage#$namedMixins` and `#$templatedMixins` hold only the mixins the class declares (and those plugins add to them); a class no longer gets the lists of its parent. The mixins of its traits and parent classes are looked up at analysis time: those of the class first, then those of its traits, then those of its parent class, the first declared winning. Mixins a plugin appends come after the declared ones.
+- `ClassLikeStorage#$transitiveNamedMixins`, `#$inheritedNamedMixinDeclaringClasses` (both always empty), `#$mixin_declaring_fqcln` (never set or read), `#getNamedMixinsForLookup()` (now returns `#$namedMixins`), `#getNamedMixinDeclaringClass()` (now the class whose templates the mixin's type arguments use, else the class itself) and `#getOwnMixins()` (now returns `#getMixins()`) are deprecated and will be removed in `0.5.0`: the mixins of a mixin are looked up along with it, and each mixin is bound in the context of the class, trait or parent class declaring it. Use `#getMixins()`.
+
 ### `0.4.3`
 
 - `Psalm\Plugin\EventHandler\Event\BeforeFileAnalysisEvent#markFileAsCliOnly()` says that a file's top-level code and the closures in it only run from the command line, like code marked `@psalm-cli-only` (what it prints isn't reported as `TaintedHtml`, and it may call `@psalm-cli-only` code); `#isFileCliOnly()` tells whether it does (a plugin marked it, or code only running from the command line includes it).
