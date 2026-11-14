@@ -10,7 +10,7 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ### `0.4.5`
 
-- `Psalm\Codebase#addReportableFiles()` lets Psalm report issues in files it neither scans nor analyzes, such as the templates a plugin compiles to PHP and reports the issues of the compiled file on. Use it instead of writing to `ProjectAnalyzer#$project_files`, which also queues the files for analysis. An issue is checked in the process that raises it: call it in an `AfterCodebasePopulated` handler for every analysis process, or in a `BeforeAddIssue` handler for issues raised while scanning.
+- `Psalm\Codebase#addReportableFiles()` lets Psalm report issues in files it neither scans nor analyzes, such as the templates a plugin compiles to PHP and reports the issues of the compiled file on. Use it instead of writing to `ProjectAnalyzer#$project_files`, which also queues the files for analysis. Call it in the plugin entry point (`$registration->codebase`): an issue is checked in the process that raises it, and files added there are reportable in every scanning and analysis process.
 
 ### `0.4.4`
 
