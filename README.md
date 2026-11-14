@@ -8,6 +8,10 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.4.5`
+
+- `Psalm\Codebase#addReportableFiles()` lets Psalm report issues in files it neither scans nor analyzes, such as the templates a plugin compiles to PHP and reports the issues of the compiled file on. Use it instead of writing to `ProjectAnalyzer#$project_files`, which also queues the files for analysis. An issue is checked in the process that raises it: call it in an `AfterCodebasePopulated` handler for every analysis process, or in a `BeforeAddIssue` handler for issues raised while scanning.
+
 ### `0.4.4`
 
 - `Psalm\Storage\ClassLikeStorage#$namedMixins` and `#$templatedMixins` hold only the mixins the class declares (and those plugins add to them); a class no longer gets the lists of its parent. The mixins of its traits and parent classes are looked up at analysis time: those of the class first, then those of its traits, then those of its parent class, the first declared winning. Mixins a plugin appends come after the declared ones.
