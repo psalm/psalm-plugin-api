@@ -11,6 +11,7 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 ### `0.4.7`
 
 - `Psalm\Type\Atomic\TStarProjection` is the `*` type argument of a generic object (`Pair<int, *>`, PHPStan's star projection), found in `TGenericObject#$type_params`. `TStarProjection#$as` is what is known of the unknown type: the bound of the template it stands for, with the other type arguments applied (`Pair<int, *>` with `@template B of list<A>` knows `list<int>`; `mixed` for a template without a bound). It is null until the generic object is expanded. A method return type provider gets a `*` type parameter (`MethodReturnTypeProviderEvent#getTemplateTypeParameters()`) as that bound.
+- `Psalm\Type\Atomic\TGenericObject#$omitted_params_from` (a new last constructor parameter) is the offset of the first type parameter the use of the class left out, which then holds its template's bound: `0` for a class written without type arguments (`Pair`), null when none is left out. A `*` argument fits a left-out one.
 
 ### `0.4.5`
 
