@@ -8,6 +8,10 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.4.7`
+
+- `Psalm\Type\Atomic\TStarProjection` is the `*` type argument of a generic object (`Pair<int, *>`, PHPStan's star projection), found in `TGenericObject#$type_params`. `TStarProjection#$as` is what is known of the unknown type: the bound of the template it stands for, with the other type arguments applied (`Pair<int, *>` with `@template B of list<A>` knows `list<int>`), or null for nothing. A method return type provider gets a `*` type parameter (`MethodReturnTypeProviderEvent#getTemplateTypeParameters()`) as that bound.
+
 ### `0.4.5`
 
 - `Psalm\Codebase#addReportableFiles()` lets Psalm report issues in files it neither scans nor analyzes, such as the templates a plugin compiles to PHP and reports the issues of the compiled file on. Use it instead of writing to `ProjectAnalyzer#$project_files`, which also queues the files for analysis. Call it in the plugin entry point (`$registration->codebase`): an issue is checked in the process that raises it, and files added there are reportable in every scanning and analysis process.
