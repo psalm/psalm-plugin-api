@@ -8,6 +8,10 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.4.8`
+
+- `Psalm\Config#$mark_all_non_internal_code_as_api` is set by `markAllNonInternalCodeAsApi="true"`: unused-code detection then treats every project class that isn't internal (empty `Psalm\Storage\ClassLikeStorage#$internal`) as `@api`, apart from the code the library doesn't ship. A plugin can keep the code users of a library can't use, such as its test suites, out of that API by setting `ClassLikeStorage#$internal` in `afterCodebasePopulated()`.
+
 ### `0.4.5`
 
 - `Psalm\Codebase#addReportableFiles()` lets Psalm report issues in files it neither scans nor analyzes, such as the templates a plugin compiles to PHP and reports the issues of the compiled file on. Use it instead of writing to `ProjectAnalyzer#$project_files`, which also queues the files for analysis. Call it in the plugin entry point (`$registration->codebase`): an issue is checked in the process that raises it, and files added there are reportable in every scanning and analysis process.
