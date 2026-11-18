@@ -10,7 +10,7 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ### `0.5.0`
 
-- [BC] `PsalmCodebase#filterCompletionItemsByBeginLiteralPart()`, deprecated since Psalm 5.21, was removed.
+- [BC] `Psalm\Codebase#filterCompletionItemsByBeginLiteralPart()`, deprecated since Psalm 5.21, was removed.
 
 ### `0.4.6`
 
