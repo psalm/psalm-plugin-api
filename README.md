@@ -8,6 +8,10 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.4.7`
+
+- `Psalm\Overlay\OverlaySession` analyses a project as if some of its files had other contents and returns the issues those contents introduce (`OverlayResult`, `OverlayIssue`, `OverlayException`, configured by `OverlayOptions`). It drives `psalm --overlay-server` in a separate process, so Psalm never loads into the caller. Use it, or the `psalm --overlay=ORIGINAL=REPLACEMENT` command, instead of building a `ProjectAnalyzer` and calling `Codebase#addTemporaryFileChanges()` and `Codebase#reloadFiles()`. The server protocol is experimental; the classes are covered by the BC promise.
+
 ### `0.4.6`
 
 - `Psalm\Config#$mark_all_non_internal_code_as_api` is set by `markAllNonInternalCodeAsApi="true"`: unused-code detection then treats every project class that isn't internal (empty `Psalm\Storage\ClassLikeStorage#$internal`) as `@api`, apart from the code the library doesn't ship. A plugin can keep the code users of a library can't use, such as its test suites, out of that API by setting `ClassLikeStorage#$internal` in `afterCodebasePopulated()`.
