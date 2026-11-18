@@ -8,6 +8,11 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.4.8`
+
+- `Psalm\Issue\CodeIssue::CWE_IDS` lists the ids of the [CWE](https://cwe.mitre.org/) weaknesses an issue flags, the most specific first (vimeo/psalm#14156). A plugin issue declares its own: `public const CWE_IDS = [89];`. Reports show them after the message, the JSON report in `cwe_ids`, and the SARIF report as `external/cwe/cwe-NNN` rule tags; the SARIF `ruleId` is now the issue type rather than its shortcode.
+- New taint kinds `redirect` (`Psalm\Type\TaintKind::INPUT_REDIRECT`, reported as `TaintedRedirect`) and `session` (`TaintKind::INPUT_SESSION`, reported as `TaintedSession`), part of `input` (vimeo/psalm#14158). Use `@psalm-taint-sink redirect $url` for the redirects of a framework and `@psalm-taint-sink session $value` for what it stores in the session. `TaintKind::USER_SECRET` and `SYSTEM_SECRET` move up two bits, and `ALL_INPUT`, `BUILTIN_TAINT_COUNT` and `TAINT_NAMES` change accordingly: use them symbolically.
+
 ### `0.4.6`
 
 - `Psalm\Config#$mark_all_non_internal_code_as_api` is set by `markAllNonInternalCodeAsApi="true"`: unused-code detection then treats every project class that isn't internal (empty `Psalm\Storage\ClassLikeStorage#$internal`) as `@api`, apart from the code the library doesn't ship. A plugin can keep the code users of a library can't use, such as its test suites, out of that API by setting `ClassLikeStorage#$internal` in `afterCodebasePopulated()`.
