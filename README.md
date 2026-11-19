@@ -8,6 +8,11 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.5.0`
+
+- [BC] A parameter default or a backed enum case value that reads a class constant whose value is not known while its file is scanned is stored unresolved, as a `Psalm\Internal\Scanner\UnresolvedConstantComponent`, so that it follows the constant when another file changes it (vimeo/psalm#14141): `Psalm\Storage\FunctionLikeParameter#$default_type` holds one instead of a `Union` for any default reading a class constant (`$i = A::Y`, `$i = self::X . '_'`), and `Psalm\Storage\EnumCaseStorage#$value` holds one instead of a `TLiteralInt` or `TLiteralString` when the case reads a constant of another class (`case X = A::Y * 2`). The property types are unchanged.
+- `Psalm\Storage\FunctionLikeParameter#getDefaultType()` gives the type of a default, resolving it when it is unresolved. Read defaults with it, and enum case values with `EnumCaseStorage#getValue()`, instead of checking `instanceof Union`.
+
 ### `0.4.6`
 
 - `Psalm\Config#$mark_all_non_internal_code_as_api` is set by `markAllNonInternalCodeAsApi="true"`: unused-code detection then treats every project class that isn't internal (empty `Psalm\Storage\ClassLikeStorage#$internal`) as `@api`, apart from the code the library doesn't ship. A plugin can keep the code users of a library can't use, such as its test suites, out of that API by setting `ClassLikeStorage#$internal` in `afterCodebasePopulated()`.
