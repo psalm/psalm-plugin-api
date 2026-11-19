@@ -8,6 +8,12 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.6.0`
+
+- [BC] A parameter default or a backed enum case value that reads a class constant whose value is not known while its file is scanned is stored unresolved, as a `Psalm\Internal\Scanner\UnresolvedConstantComponent`, so that it follows the constant when another file changes it (vimeo/psalm#14141): `Psalm\Storage\FunctionLikeParameter#$default_type` holds one instead of a `Union` for any default reading a class constant (`$i = A::Y`, `$i = self::X . '_'`), and `Psalm\Storage\EnumCaseStorage#$value` holds one instead of a `TLiteralInt` or `TLiteralString` when the case reads a constant of another class (`case X = A::Y * 2`). The property types are unchanged.
+- `Psalm\Storage\FunctionLikeParameter#getDefaultType()` gives the type of a default, resolving it when it is unresolved. Read defaults with it, and enum case values with `EnumCaseStorage#getValue()`, instead of checking `instanceof Union`.
+- [BC] With vimeo/psalm#14233, values that read a global constant declared in a PHP file (rather than by PHP or an extension), or a class constant in a global constant, are deferred too: `Psalm\Storage\ClassConstantStorage#$unresolved_node` holds the expression of a class constant such as `const D = BASE * 2`; for a global `const`, `Psalm\Storage\FileStorage#$constants` holds `mixed` and `FileStorage#$unresolved_constants` holds the expression; a deferred `define()` value, such as `define('C', A::Y)`, is no longer in `FileStorage#$constants` or `Psalm\Storage\FunctionLikeStorage#$defined_constants`.
+
 ### `0.5.0`
 
 - [BC] `Psalm\Storage\FunctionLikeStorage#$allow_named_arg_calls` was replaced by `#$named_arguments`, a `Psalm\Storage\NamedArguments` case or null (vimeo/psalm#12389). It comes from the docblock of the function, of its class or of the method it overrides: `NOT_ALLOWED` for `@no-named-arguments` (and for internal code when `allowInternalNamedArgumentsCalls="false"`), `REQUIRED` for `@arguments-by-name`, `REQUIRED_FOR_OPTIONAL` for `@optional-arguments-by-name` and `STABLE` for `@stable-parameter-names`. Call `FunctionLikeStorage#allowsNamedArguments()` instead of reading the property, and set `#$named_arguments` to `NamedArguments::NOT_ALLOWED` instead of setting it to `false`.
