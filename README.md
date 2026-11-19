@@ -8,6 +8,12 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
+### `0.5.0`
+
+- [BC] `Psalm\Storage\FunctionLikeStorage#$allow_named_arg_calls` was replaced by `#$named_arguments`, a `Psalm\Storage\NamedArguments` case or null (vimeo/psalm#12389). It comes from the docblock of the function, of its class or of the method it overrides: `NOT_ALLOWED` for `@no-named-arguments` (and for internal code when `allowInternalNamedArgumentsCalls="false"`), `REQUIRED` for `@arguments-by-name`, `REQUIRED_FOR_OPTIONAL` for `@optional-arguments-by-name` and `STABLE` for `@stable-parameter-names`. Call `FunctionLikeStorage#allowsNamedArguments()` instead of reading the property, and set `#$named_arguments` to `NamedArguments::NOT_ALLOWED` instead of setting it to `false`.
+- [BC] `Psalm\Plugin\DynamicFunctionStorage#$allow_named_arg_calls` was replaced by `#$named_arguments` in the same way: set it to `NamedArguments::NOT_ALLOWED` instead of setting `#$allow_named_arg_calls` to `false`.
+- `Psalm\Storage\ClassLikeStorage#$named_arguments` holds the tag of a class, interface, trait or enum, which its methods without a tag of their own use (the private methods of a class only take `@no-named-arguments` from it). `Psalm\Storage\FunctionLikeStorage#requiresNamedArgument()` tells whether the argument of a parameter must be passed by name; calls that pass it by position are reported as `Psalm\Issue\PositionalArgumentNotAllowed`.
+
 ### `0.4.6`
 
 - `Psalm\Config#$mark_all_non_internal_code_as_api` is set by `markAllNonInternalCodeAsApi="true"`: unused-code detection then treats every project class that isn't internal (empty `Psalm\Storage\ClassLikeStorage#$internal`) as `@api`, apart from the code the library doesn't ship. A plugin can keep the code users of a library can't use, such as its test suites, out of that API by setting `ClassLikeStorage#$internal` in `afterCodebasePopulated()`.
@@ -19,7 +25,7 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 ### `0.4.4`
 
 - `Psalm\Storage\ClassLikeStorage#$namedMixins` and `#$templatedMixins` hold only the mixins the class declares (and those plugins add to them); a class no longer gets the lists of its parent. The mixins of its traits and parent classes are looked up at analysis time: those of the class first, then those of its traits, then those of its parent class, the first declared winning. Mixins a plugin appends come after the declared ones.
-- `ClassLikeStorage#$transitiveNamedMixins`, `#$inheritedNamedMixinDeclaringClasses` (both always empty), `#$mixin_declaring_fqcln` (never set or read), `#getNamedMixinsForLookup()` (now returns `#$namedMixins`), `#getNamedMixinDeclaringClass()` (now the class whose templates the mixin's type arguments use, else the class itself) and `#getOwnMixins()` (now the mixins the class declares, then those plugins added) are deprecated and will be removed in `0.5.0`: the mixins of a mixin are looked up along with it, and each mixin is bound in the context of the class, trait or parent class declaring it. Read `#$namedMixins` and `#$templatedMixins`.
+- `ClassLikeStorage#$transitiveNamedMixins`, `#$inheritedNamedMixinDeclaringClasses` (both always empty), `#$mixin_declaring_fqcln` (never set or read), `#getNamedMixinsForLookup()` (now returns `#$namedMixins`), `#getNamedMixinDeclaringClass()` (now the class whose templates the mixin's type arguments use, else the class itself) and `#getOwnMixins()` (now the mixins the class declares, then those plugins added) are deprecated and will be removed in a later release: the mixins of a mixin are looked up along with it, and each mixin is bound in the context of the class, trait or parent class declaring it. Read `#$namedMixins` and `#$templatedMixins`.
 
 ### `0.4.3`
 
