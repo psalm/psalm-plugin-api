@@ -8,12 +8,18 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 
 ## Changelog
 
-### `0.4.8`
+### `0.5.1`
 
 - `Psalm\Issue\CodeIssue::CWE_IDS` lists the ids of the [CWE](https://cwe.mitre.org/) weaknesses an issue flags, the most specific first (vimeo/psalm#14156). A plugin issue declares its own: `public const CWE_IDS = [89];`. Reports show them after the message, the JSON report in `cwe_ids`, and the SARIF report as `external/cwe/cwe-NNN` rule tags; the SARIF `ruleId` is now the issue type rather than its shortcode.
-- New taint kinds `redirect` (`Psalm\Type\TaintKind::INPUT_REDIRECT`, reported as `TaintedRedirect`) and `session` (`TaintKind::INPUT_SESSION`, reported as `TaintedSession`), part of `input` (vimeo/psalm#14158). Use `@psalm-taint-sink redirect $url` for the redirects of a framework and `@psalm-taint-sink session $value` for what it stores in the session. `TaintKind::USER_SECRET` and `SYSTEM_SECRET` move up two bits, and `ALL_INPUT`, `BUILTIN_TAINT_COUNT` and `TAINT_NAMES` change accordingly: use them symbolically.
+- New taint kind `redirect` (`Psalm\Type\TaintKind::INPUT_REDIRECT`, reported as `TaintedRedirect`), part of `input` (vimeo/psalm#14158). Use `@psalm-taint-sink redirect $url` for the redirects of a framework, along with `url_component` and `url_path` to report what a value injects after a fixed server. `TaintKind::USER_SECRET` and `SYSTEM_SECRET` move up one bit, and `ALL_INPUT`, `BUILTIN_TAINT_COUNT` and `TAINT_NAMES` change accordingly: use them symbolically. What is stored in `$_SESSION` flows into what reads it back; frameworks' session services can do the same with a [keyed store](https://psalm.dev/docs/security_analysis/taint_flow/#keyed-stores) (`@psalm-flow ($value) -> Session::$data[$key]`).
 - New security issues a plugin can report for the APIs of a framework (vimeo/psalm#14160): `Psalm\Issue\WeakHash`, `WeakCipher`, `WeakRandom`, `InsecureCookie` (a cookie set without the secure flag) and `XmlExternalEntity`.
 - `Psalm\Storage\Assertion\MatchesPattern` says that a value matches a regular expression telling the characters it holds: it doesn't narrow the type, but the value can't carry its `$removed_taints` (vimeo/psalm#14161).
+
+### `0.5.0`
+
+- [BC] `Psalm\Storage\FunctionLikeStorage#$allow_named_arg_calls` was replaced by `#$named_arguments`, a `Psalm\Storage\NamedArguments` case or null (vimeo/psalm#12389). It comes from the docblock of the function, of its class or of the method it overrides: `NOT_ALLOWED` for `@no-named-arguments` (and for internal code when `allowInternalNamedArgumentsCalls="false"`), `REQUIRED` for `@arguments-by-name`, `REQUIRED_FOR_OPTIONAL` for `@optional-arguments-by-name` and `STABLE` for `@stable-parameter-names`. Call `FunctionLikeStorage#allowsNamedArguments()` instead of reading the property, and set `#$named_arguments` to `NamedArguments::NOT_ALLOWED` instead of setting it to `false`.
+- [BC] `Psalm\Plugin\DynamicFunctionStorage#$allow_named_arg_calls` was replaced by `#$named_arguments` in the same way: set it to `NamedArguments::NOT_ALLOWED` instead of setting `#$allow_named_arg_calls` to `false`.
+- `Psalm\Storage\ClassLikeStorage#$named_arguments` holds the tag of a class, interface, trait or enum, which its methods without a tag of their own use (the private methods of a class only take `@no-named-arguments` from it). `Psalm\Storage\FunctionLikeStorage#requiresNamedArgument()` tells whether the argument of a parameter must be passed by name; calls that pass it by position are reported as `Psalm\Issue\PositionalArgumentNotAllowed`.
 
 ### `0.4.6`
 
@@ -26,7 +32,7 @@ This allows breaking changes within Psalm's plugin API, without requiring a majo
 ### `0.4.4`
 
 - `Psalm\Storage\ClassLikeStorage#$namedMixins` and `#$templatedMixins` hold only the mixins the class declares (and those plugins add to them); a class no longer gets the lists of its parent. The mixins of its traits and parent classes are looked up at analysis time: those of the class first, then those of its traits, then those of its parent class, the first declared winning. Mixins a plugin appends come after the declared ones.
-- `ClassLikeStorage#$transitiveNamedMixins`, `#$inheritedNamedMixinDeclaringClasses` (both always empty), `#$mixin_declaring_fqcln` (never set or read), `#getNamedMixinsForLookup()` (now returns `#$namedMixins`), `#getNamedMixinDeclaringClass()` (now the class whose templates the mixin's type arguments use, else the class itself) and `#getOwnMixins()` (now the mixins the class declares, then those plugins added) are deprecated and will be removed in `0.5.0`: the mixins of a mixin are looked up along with it, and each mixin is bound in the context of the class, trait or parent class declaring it. Read `#$namedMixins` and `#$templatedMixins`.
+- `ClassLikeStorage#$transitiveNamedMixins`, `#$inheritedNamedMixinDeclaringClasses` (both always empty), `#$mixin_declaring_fqcln` (never set or read), `#getNamedMixinsForLookup()` (now returns `#$namedMixins`), `#getNamedMixinDeclaringClass()` (now the class whose templates the mixin's type arguments use, else the class itself) and `#getOwnMixins()` (now the mixins the class declares, then those plugins added) are deprecated and will be removed in a later release: the mixins of a mixin are looked up along with it, and each mixin is bound in the context of the class, trait or parent class declaring it. Read `#$namedMixins` and `#$templatedMixins`.
 
 ### `0.4.3`
 
